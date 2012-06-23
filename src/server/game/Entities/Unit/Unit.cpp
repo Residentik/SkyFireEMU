@@ -8366,6 +8366,24 @@ bool Unit::HandleAuraProc(Unit* victim, uint32 damage, Aura* triggeredByAura, Sp
                     CastCustomSpell(this, 70845, &basepoints0, NULL, NULL, true);
                     break;
                 }
+                // Juggernaut
+                case 64976:
+                {
+                    *handled = true;
+                    CastSpell(this,65156,true);
+                    break;
+                }
+                // Juggernaut buff
+                case 65156:
+                {
+                    *handled = true;
+
+                    // Proc only on Slam's damage spell (not the dummy cast one) and mortal strike
+                    if (procSpell->Id != 50783 && procSpell->Id != 12294)
+                        return false;
+
+                    return true;
+                }
                 default:
                     break;
             }
@@ -8503,6 +8521,7 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
                     RemoveAuraFromStack(auraSpellInfo->Id);
                     return false;
                 }
+                // Vigilance
                 if (auraSpellInfo->Id == 50720)
                 {
                     target = triggeredByAura->GetCaster();
@@ -10914,7 +10933,7 @@ int32 Unit::SpellBaseDamageBonus(SpellSchoolMask schoolMask)
 
     if (GetTypeId() == TYPEID_PLAYER)
     {
-        uint32 spellPower = ToPlayer()->GetBaseSpellPowerBonus();
+        uint32 spellPower = ToPlayer()->GetSpellPowerBonus();
         // Spell power from SPELL_AURA_MOD_SPELL_POWER_PCT
         AuraEffectList const& mSpellPowerPct = GetAuraEffectsByType(SPELL_AURA_MOD_SPELL_POWER_PCT);
         for (AuraEffectList::const_iterator i = mSpellPowerPct.begin(); i != mSpellPowerPct.end(); ++i)
@@ -11644,7 +11663,7 @@ int32 Unit::SpellBaseHealingBonus(SpellSchoolMask schoolMask)
     // Healing bonus of spirit, intellect and strength
     if (GetTypeId() == TYPEID_PLAYER)
     {
-        uint32 spellPower = ToPlayer()->GetBaseSpellPowerBonus();
+        uint32 spellPower = ToPlayer()->GetSpellPowerBonus();
         // Spell power from SPELL_AURA_MOD_SPELL_POWER_PCT
         AuraEffectList const& mSpellPowerPct = GetAuraEffectsByType(SPELL_AURA_MOD_SPELL_POWER_PCT);
         for (AuraEffectList::const_iterator i = mSpellPowerPct.begin(); i != mSpellPowerPct.end(); ++i)
