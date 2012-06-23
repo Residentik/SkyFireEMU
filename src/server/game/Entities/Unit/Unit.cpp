@@ -2904,18 +2904,19 @@ void Unit::_UpdateSpells(uint32 time)
 
 void Unit::_UpdateAutoRepeatSpell()
 {
+    bool isAutoShot = m_currentSpells[CURRENT_AUTOREPEAT_SPELL]->m_spellInfo->Id == 75;
     // check "realtime" interrupts
-    if ((GetTypeId() == TYPEID_PLAYER && ToPlayer()->isMoving()) || IsNonMeleeSpellCasted(false, false, true, m_currentSpells[CURRENT_AUTOREPEAT_SPELL]->m_spellInfo->Id == 75))
+    if (IsNonMeleeSpellCasted(false, false, true, isAutoShot))
     {
         // cancel wand shoot
-        if (m_currentSpells[CURRENT_AUTOREPEAT_SPELL]->m_spellInfo->Id != 75)
+        if (!isAutoShot)
             InterruptSpell(CURRENT_AUTOREPEAT_SPELL);
         m_AutoRepeatFirstCast = true;
         return;
     }
 
     // apply delay (Auto Shot (spellID 75) not affected)
-    if (m_AutoRepeatFirstCast && getAttackTimer(RANGED_ATTACK) < 500 && m_currentSpells[CURRENT_AUTOREPEAT_SPELL]->m_spellInfo->Id != 75)
+    if (m_AutoRepeatFirstCast && getAttackTimer(RANGED_ATTACK) < 500 && !isAutoShot)
         setAttackTimer(RANGED_ATTACK, 500);
     m_AutoRepeatFirstCast = false;
 
@@ -8915,10 +8916,12 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
             if (!HealthBelowPctDamaged(30, damage)) // Only proc if it brings us below 30% health
                 return false;
 
-            ToPlayer()->RemoveSpellCooldown(48982, true); // Remove cooldown of rune tap
-            CastSpell(this, 96171, true); // next rune tap wont cost runes
-            cooldown = 45000; // Can only happen once in 45 seconds
-            break;
+            else if (!ToPlayer()->HasSpellCooldown(96171))
+            {   
+                ToPlayer()->RemoveSpellCooldown(48982, true); // Remove cooldown of rune tap
+                CastSpell(this, 96171, true); // next rune tap wont cost runes
+                ToPlayer()->AddSpellCooldown(96171, 0, time(NULL) + 45);
+            }
         }
         // Sudden Doom
         case 49018:
@@ -9005,16 +9008,9 @@ bool Unit::HandleProcTriggerSpell(Unit* victim, uint32 damage, AuraEffect* trigg
         case 75480: // Scaly Nimbleness
         case 71633: // Thick Skin
         case 71639: // Thick Skin
-            if (HealthBelowPct(34) || (!HealthBelowPctDamaged(35, damage)))
+            if (!HealthBelowPctDamaged(35, damage))
                 return false;
-            else
-            {
-                if (!ToPlayer()->HasSpellCooldown(trigger_spell_id))
-                {
-                    AddAura(trigger_spell_id, this);
-                    ToPlayer()->AddSpellCooldown(trigger_spell_id, 0, time(NULL) + 30);
-                }
-            }
+
         break;
         // Die by the Sword
         case 85386:

@@ -210,7 +210,6 @@ void Player::UpdateArmor()
 
     value  = GetModifierValue(unitMod, BASE_VALUE);         // base armor (from items)
     value *= GetModifierValue(unitMod, BASE_PCT);           // armor percent from items
-    value += GetStat(STAT_AGILITY) * 2.0f;                  // armor bonus from stats
     value += GetModifierValue(unitMod, TOTAL_VALUE);
 
     //add dynamic flat mods
@@ -353,23 +352,23 @@ void Player::UpdateAttackPowerAndDamage(bool ranged)
                 val2 = (level * 3.0f) + (GetStat(STAT_STRENGTH) * 2.0f) - 20.0f;
                 break;
             case CLASS_ROGUE:
-                val2 = (level * 2.0f) + GetStat(STAT_STRENGTH) + GetStat(STAT_AGILITY) - 20.0f;
+                val2 = (level * 2.0f) + GetStat(STAT_STRENGTH) + GetStat(STAT_AGILITY) * 2.0f - 20.0f;
                 break;
             case CLASS_HUNTER:
                 val2 = (level * 2.0f) + GetStat(STAT_STRENGTH) + GetStat(STAT_AGILITY) - 20.0f;
                 break;
             case CLASS_SHAMAN:
-                val2 = (level * 2.0f) + (GetStat(STAT_STRENGTH) - 10.0f) + ((GetStat(STAT_AGILITY) * 2) - 20.0f);
+                val2 = (level * 2.0f) + GetStat(STAT_STRENGTH) + (GetStat(STAT_AGILITY) * 2.0f - 20.0f);
                 break;
             case CLASS_DRUID:
             {
                 switch (GetShapeshiftForm())
                 {
                     case FORM_CAT:
-                        val2 = (level * 2.0f) + GetStat(STAT_STRENGTH) * 2.0f + GetStat(STAT_AGILITY) - 20.0f;
+                        val2 = (level * 2.0f) + GetStat(STAT_STRENGTH) + GetStat(STAT_AGILITY) * 3.0f - 20.0f;
                         break;
                     case FORM_BEAR:
-                        val2 = (level * 3.0f) + GetStat(STAT_STRENGTH) * 2.0f - 20.0f;
+                        val2 = (level * 3.0f) + GetStat(STAT_STRENGTH) * 2.0f + GetStat(STAT_AGILITY) * 3.0f - 20.0f;
                         break;
                     case FORM_MOONKIN:
                         val2 = (level * 1.5f) + GetStat(STAT_STRENGTH) * 2.0f - 20.0f;

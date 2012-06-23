@@ -2860,6 +2860,12 @@ void AuraEffect::HandleAuraMounted(AuraApplication const* aurApp, uint8 mode, bo
     if (apply)
     {
         uint32 creatureEntry = GetMiscValue();
+        if (aurApp->GetBase()->GetId() == 87840)
+        {
+		    target->Mount(player->getGender() == GENDER_FEMALE ? 29423 : 29422, 0, GetMiscValue());
+		    target->Mount(player->getGender() == GENDER_MALE ? 29422 : 29423, 0, GetMiscValue());
+		return;
+        }
 
         // Festive Holiday Mount
         if (target->HasAura(62061))
@@ -6785,6 +6791,17 @@ void AuraEffect::HandlePeriodicDamageAurasTick(Unit* target, Unit* caster) const
         caster->SpellHitResult(target, GetSpellInfo(), false) != SPELL_MISS_NONE)
         return;
 
+    // Dark Evangelism
+    if (target->HasAura(15407)) // Mind Flay
+    {
+        if (caster->HasAura(81659)) // Rank 1
+            caster->CastSpell(caster, 87117, true);
+        else if (caster->HasAura(81662)) // Rank 2
+            caster->CastSpell(caster, 87118, true);
+
+        caster->AddAura(87154, caster);
+    }
+    
     // some auras remove at specific health level or more
     if (GetAuraType() == SPELL_AURA_PERIODIC_DAMAGE)
     {

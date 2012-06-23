@@ -735,7 +735,7 @@ enum Opcodes
     CMSG_INSPECT_HONOR_STATS                         = 0x00E93, // 4.0.6a 13623
     SMSG_INSPECT_HONOR_STATS                         = 0x0005E, // 4.0.6a 13623
     CMSG_BATTLEMASTER_HELLO                          = 0x06EC8, // 4.0.6a 13623
-    CMSG_MOVE_START_SWIM_CHEAT                       = 0x026C0, // 4.0.6a 13623
+    CMSG_MOVE_START_SWIM_CHEAT                       = 0x100F2, // 4.0.6a 13623
     CMSG_MOVE_STOP_SWIM_CHEAT                        = 0x06988, // 4.0.6a 13623
     SMSG_FORCE_WALK_SPEED_CHANGE                     = 0x068E8, // 4.0.6a 13623
     CMSG_FORCE_WALK_SPEED_CHANGE_ACK                 = 0x078CC, // 4.0.6a 13623

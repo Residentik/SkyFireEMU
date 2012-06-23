@@ -487,6 +487,70 @@ void Spell::EffectSchoolDMG(SpellEffIndex effIndex)
                 }
                 break;
             }
+            case SPELLFAMILY_WARRIOR:
+            {
+                // Bloodthirst
+                if (m_spellInfo->SpellFamilyFlags [1] & 0x400)
+                {
+                    damage = uint32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.8);
+                }
+                // Victory Rush
+                else if (m_spellInfo->SpellFamilyFlags[1] & 0x100)
+                {
+                    damage = uint32(m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.45); // wowwiki formula
+                    m_caster->RemoveAurasDueToSpell(32216); // Victorious
+                }
+                // Heroic Leap
+                else if (m_spellInfo->Id == 52174)
+                    damage = uint32(8 + m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.5 + 1);
+                // Cleave
+                else if (m_spellInfo->Id == 845)
+                    damage = uint32(6 + m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.45);
+                // Intercept
+                else if (m_spellInfo->Id == 20253)
+                    damage = uint32(1+ m_caster->GetTotalAttackPowerValue(BASE_ATTACK) * 0.12);
+                // Execute
+                else if (m_spellInfo->Id == 5308)
+                {
+                    float ap = m_caster->GetTotalAttackPowerValue(BASE_ATTACK);
+                    damage = uint32(10 + ap * 0.437 * 100 / 100);
+                    uint32 power = m_caster->GetPower(POWER_RAGE);
+                    if (power > 0)
+                    {
+                        uint32 mod = power > 20 ? 20 : power;
+                        uint32 bonus_rage = 0;
+
+                        if (m_caster->HasAura(29723)) bonus_rage = 5;
+                        if (m_caster->HasAura(29725)) bonus_rage = 10;
+
+                        damage += uint32(ap * 0.874 * 100 / 100 - 1);
+                        m_caster->SetPower(POWER_RAGE,(power - mod) + bonus_rage);
+                    }
+                }
+                // Heroic Strike
+                else if (m_spellInfo->Id == 78)
+                       damage = uint32(8 + (m_caster->GetTotalAttackPowerValue(BASE_ATTACK)) * 0.6);
+                // Shockwave
+                else if (m_spellInfo->Id == 46968)
+                {
+                    int32 pct = m_caster->CalculateSpellDamage(unitTarget,m_spellInfo, 2);
+                    if (pct > 0)
+                        damage += int32(CalculatePctN(m_caster->GetTotalAttackPowerValue(BASE_ATTACK), pct));
+                }
+                else if (m_spellInfo->Id == 6343)
+                {
+                    uint32 trig_spell;
+                    if (m_caster->HasAura(80979))
+                       trig_spell = 87095;
+                    else if (m_caster->HasAura(80980))
+                       trig_spell = 87096;
+                    else
+                       break;
+                    if (urand(0, 1))
+                           m_caster->CastSpell(m_caster, trig_spell, true);
+                }
+                break;
+            }
             case SPELLFAMILY_WARLOCK:
             {
                 // Incinerate Rank 1 & 2
@@ -1509,6 +1573,62 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
                 }
             }
             break;
+        case SPELLFAMILY_WARLOCK:
+            // Life Tap
+            if ((m_spellInfo->SpellFamilyFlags [0]
+                    & SPELLFAMILYFLAG_WARLOCK_LIFETAP) && m_caster->ToPlayer())
+            {
+                float spFactor = 0.0f;
+                switch (m_spellInfo->Id)
+                {
+                    case 11689:
+                        spFactor = 0.2f;
+                        break;
+                    case 27222:
+                    case 57946:
+                        spFactor = 0.5f;
+                        break;
+                }
+                int32 damage = int32(unitTarget->GetMaxHealth() * 0.15);
+                int32 mana = int32(damage * 1.2);
+
+                if (unitTarget && (int32(unitTarget->GetHealth()) > damage))
+                {
+                    // Shouldn't Appear in Combat Log
+                    unitTarget->ModifyHealth(-damage);
+
+                    // Improved Life Tap mod
+                    if (AuraEffect const * aurEff = m_caster->GetDummyAuraEffect(SPELLFAMILY_WARLOCK, 208, 0)) mana =
+                            (aurEff->GetAmount() + 100) * mana / 100;
+
+                    m_caster->ModifyPower(POWER_MANA, mana);
+                    //m_caster->CastCustomSpell(unitTarget, 31818, &mana, NULL, NULL, true);
+
+                    // Mana Feed
+                    int32 manaFeedVal = 0;
+                    if (AuraEffect const * aurEff = m_caster->GetAuraEffect(SPELL_AURA_ADD_FLAT_MODIFIER, SPELLFAMILY_WARLOCK, 1982, 0)) manaFeedVal =
+                        aurEff->GetAmount();
+
+                    if (manaFeedVal > 0)
+                    {
+                        manaFeedVal = manaFeedVal * mana / 100;
+                        m_caster->CastCustomSpell(m_caster, 32553, &manaFeedVal,
+                                NULL, NULL, true, NULL);
+                    }
+                }
+                else SendCastResult(SPELL_FAILED_FIZZLE);
+                return;
+            }
+            switch(m_spellInfo->Id)
+            {
+                case 19028: // Soul Link
+                {
+                    if(Pet* pet =  m_caster->ToPlayer()->GetPet())
+                        pet->AddAura(25228,pet);
+                    break;
+                }
+            }
+            break;
         case SPELLFAMILY_DRUID:
         {
             // Starfall
@@ -1714,14 +1834,26 @@ void Spell::EffectDummy(SpellEffIndex effIndex)
             // Death strike
             if (m_spellInfo->SpellFamilyFlags[0] & SPELLFAMILYFLAG_DK_DEATH_STRIKE)
             {
-                if ((m_caster->CountPctFromMaxHealth(7)) > (20 * m_caster->GetDamageTakenInPastSecs(5) / 100))
-                    bp = m_caster->CountPctFromMaxHealth(7);
+                if(((m_caster->GetDamageTakenInPastSecs(5) * 15) / 100) > m_caster->CountPctFromMaxHealth(damage))
+                    bp = ((m_caster->GetDamageTakenInPastSecs(5) * 15) / 100);
                 else
-                    bp = (20 * m_caster->GetDamageTakenInPastSecs(5) / 100);
+                    bp = m_caster->CountPctFromMaxHealth(damage);
 
                 // Improved Death Strike
                 if (AuraEffect const* aurEff = m_caster->GetAuraEffect(SPELL_AURA_ADD_PCT_MODIFIER, SPELLFAMILY_DEATHKNIGHT, 2751, 0))
-                    AddPctN(bp, m_caster->CalculateSpellDamage(m_caster, aurEff->GetSpellInfo(), 2));
+                    bp = int32(bp * (m_caster->CalculateSpellDamage(m_caster, aurEff->GetSpellInfo(), 2) + 100.0f) / 100.0f);
+
+                if (m_caster->ToPlayer()->HasAuraType(SPELL_AURA_MASTERY))
+                {
+					if (m_caster->ToPlayer()->HasSpell(50029)) //Blood Shield Mastery Blood
+					{
+						 if (m_caster->HasAura(48263))
+                         {
+                             int32 shield = int32(bp * (0.5f + (6.25f * m_caster->ToPlayer()->GetMasteryPoints())) / 100.0f);
+                             m_caster->CastCustomSpell(m_caster, 77535, &shield, NULL, NULL, false);
+                         }
+                    }
+			     }
 
                 // Glyph of Dark Succor
                 if (AuraEffect const* aurEff = m_caster->GetAuraEffect(96279, 0))

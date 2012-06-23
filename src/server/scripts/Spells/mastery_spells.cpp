@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2011-2012 Project SkyFire <http://www.projectskyfire.org/>
  * Copyright (C) 2008-2012 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2011-2012 Project StudioMirage <http://www.studio-mirage.fr/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -65,6 +66,7 @@ public:
     }
 };
 
+// Warrior masteries
 // 76838 Strikes of Opportunity
 class spell_war_strikes_of_opportunity : public SpellScriptLoader
 {
@@ -131,6 +133,7 @@ public:
     }
 };
 
+// Mage masteries
 // 76547 Mana Adept
 class spell_mage_mana_adept : public SpellScriptLoader
 {
@@ -237,6 +240,7 @@ public:
     }
 };
 
+// Shaman masteries
 // 77222 Elemental Overlord
 class spell_sha_elemental_overlord : public SpellScriptLoader
 {
@@ -374,6 +378,7 @@ public:
     }
 };
 
+// Hunter masteries
 // 76659 Wild Quiver
 class spell_hun_wild_quiver : public SpellScriptLoader
 {
@@ -422,6 +427,22 @@ public:
     }
 };
 
+// 76658 Essence of the Viper
+class spell_hun_essence_of_the_viper : public SpellScriptLoader
+{
+public:
+    spell_hun_essence_of_the_viper() : SpellScriptLoader("spell_hun_essence_of_the_viper") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);
+        script->SetMasteryBaseAmount(EFFECT_1, 100);
+        return script;
+    }
+};
+
+// Rogue masteries
 // 76803 Potent Poisons
 class spell_rog_potent_poisons : public SpellScriptLoader
 {
@@ -488,6 +509,252 @@ public:
     }
 };
 
+// DeathKnight masteries
+// 77514 Frozen Heart
+class spell_dk_frozen_heart : public SpellScriptLoader
+{
+public:
+    spell_dk_frozen_heart() : SpellScriptLoader("spell_dk_frozen_heart") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);
+        script->SetMasteryBaseAmount(EFFECT_1, 200);
+        return script;
+    }
+};
+
+// 77515 Dreadblade
+class spell_dk_dreadblade : public SpellScriptLoader
+{
+public:
+    spell_dk_dreadblade() : SpellScriptLoader("spell_dk_dreadblade") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);
+        script->SetMasteryBaseAmount(EFFECT_1, 250);
+        return script;
+    }
+};
+
+// 77513 Blood Shield
+class spell_dk_blood_shield : public SpellScriptLoader
+{
+public:
+    spell_dk_blood_shield() : SpellScriptLoader("spell_dk_blood_shield") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_DUMMY); // Test
+        script->SetMasteryBaseAmount(EFFECT_1, 625);
+        return script;
+    }
+};
+
+// Druid masteries
+// 77492 Total Eclipse
+class spell_dru_total_eclipse : public SpellScriptLoader
+{
+public:
+    spell_dru_total_eclipse() : SpellScriptLoader("spell_dru_total_eclipse") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_ADD_FLAT_MODIFIER);
+        script->SetMasteryBaseAmount(EFFECT_1, 200);
+        return script;
+    }
+};
+
+// 77495 Harmony
+class spell_dru_harmony : public SpellScriptLoader
+{
+public:
+    spell_dru_harmony() : SpellScriptLoader("spell_dru_harmony") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_ADD_PCT_MODIFIER);
+        script->SetMasteryBaseAmount(EFFECT_1, 125);
+        return script;
+    }
+};
+
+// 77493 Razor Claws
+class spell_dru_razor_claws : public SpellScriptLoader
+{
+public:
+    spell_dru_razor_claws() : SpellScriptLoader("spell_dru_razor_claws") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_MOD_DAMAGE_DONE_FOR_MECHANIC);
+        script->SetMasteryBaseAmount(EFFECT_1, 313);
+        return script;
+    }
+};
+
+// 77494 Savage Defender
+class spell_dru_savage_defender : public SpellScriptLoader
+{
+public:
+    spell_dru_savage_defender() : SpellScriptLoader("spell_dru_savage_defender") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_DUMMY); // Test
+        script->SetMasteryBaseAmount(EFFECT_1, 400);
+        return script;
+    }
+};
+
+// Paladin masteries
+// 76671 Divine Bulwark
+class spell_pal_divine_bulwark : public SpellScriptLoader
+{
+public:
+    spell_pal_divine_bulwark() : SpellScriptLoader("spell_pal_divine_bulwark") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_MOD_BLOCK_PERCENT);
+        script->SetMasteryBaseAmount(EFFECT_1, 225);
+        return script;
+    }
+};
+
+// 76669 Illuminated Healing
+class spell_pal_illuminated_healing : public SpellScriptLoader
+{
+public:
+    spell_pal_illuminated_healing() : SpellScriptLoader("spell_pal_illuminated_healing") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_SCHOOL_HEAL_ABSORB);
+        script->SetMasteryBaseAmount(EFFECT_1, 150);
+        return script;
+    }
+};
+
+// 76672 Hand of Light
+class spell_pal_hang_of_light : public SpellScriptLoader
+{
+public:
+    spell_pal_hang_of_light() : SpellScriptLoader("spell_pal_hang_of_light") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
+        script->SetMasteryBaseAmount(EFFECT_1, 210);
+        return script;
+    }
+};
+
+// Warlock masteries
+// 77219 Master Demonologist
+class spell_warl_master_demonologist : public SpellScriptLoader
+{
+public:
+    spell_warl_master_demonologist() : SpellScriptLoader("spell_warl_master_demonologist") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_ADD_FLAT_MODIFIER);
+        script->SetMasteryAura(EFFECT_1, SPELL_AURA_ADD_FLAT_MODIFIER);
+        script->SetMasteryBaseAmount(EFFECT_2, 200);
+        return script;
+    }
+};
+
+// 77220 Fiery Apocalypse
+class spell_warl_fiery_apocalypse : public SpellScriptLoader
+{
+public:
+    spell_warl_fiery_apocalypse() : SpellScriptLoader("spell_warl_fiery_apocalypse") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE);
+        script->SetMasteryBaseAmount(EFFECT_1, 135);
+        return script;
+    }
+};
+
+// 77215 potent Afflictions
+class spell_warl_potent_afflictions : public SpellScriptLoader
+{
+public:
+    spell_warl_potent_afflictions() : SpellScriptLoader("spell_warl_potent_afflictions") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_ADD_PCT_MODIFIER);
+        script->SetMasteryBaseAmount(EFFECT_2, 163);
+        return script;
+    }
+};
+
+// Priest masteries
+// 77486 Shadow Orb Power
+class spell_pri_shadow_orb_power : public SpellScriptLoader
+{
+public:
+    spell_pri_shadow_orb_power() : SpellScriptLoader("spell_pri_shadow_orb_power") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
+        script->SetMasteryBaseAmount(EFFECT_1, 145);
+        return script;
+    }
+};
+
+// 77484 Shield Discipline
+class spell_pri_shield_discipline : public SpellScriptLoader
+{
+public:
+    spell_pri_shield_discipline() : SpellScriptLoader("spell_pri_shield_discipline") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_DUMMY); // Test
+        script->SetMasteryBaseAmount(EFFECT_1, 250);
+        return script;
+    }
+};
+
+// 77485 Echo of Light
+class spell_pri_echo_of_light : public SpellScriptLoader
+{
+public:
+    spell_pri_echo_of_light() : SpellScriptLoader("spell_pri_echo_of_light") { }
+
+    AuraScript* GetAuraScript() const
+    {
+        MasteryScript* script = new MasteryScript();
+        script->SetMasteryAura(EFFECT_0, SPELL_AURA_DUMMY); // Test
+        script->SetMasteryBaseAmount(EFFECT_1, 125);
+        return script;
+    }
+};
+
 void AddSC_mastery_spells()
 {
     new player_scripts_spec;
@@ -510,9 +777,36 @@ void AddSC_mastery_spells()
     // Hunter masteries
     new spell_hun_wild_quiver;
     new spell_hun_master_of_beasts;
+    new spell_hun_essence_of_the_viper;
 
     // Rogue masteries
     new spell_rog_potent_poisons;
     new spell_rog_main_gauche;
     new spell_rog_executioner;
+
+    // Death Knight masteries
+    new spell_dk_frozen_heart;
+    new spell_dk_dreadblade;
+    new spell_dk_blood_shield;
+
+    // Druid masteries
+    new spell_dru_total_eclipse;
+    new spell_dru_harmony;
+    new spell_dru_razor_claws;
+    new spell_dru_savage_defender;
+
+    // Paladin masteries
+    new spell_pal_divine_bulwark;
+    new spell_pal_illuminated_healing;
+    new spell_pal_hang_of_light;
+
+    // Warlock masteries
+    new spell_warl_master_demonologist;
+    new spell_warl_fiery_apocalypse;
+    new spell_warl_potent_afflictions;
+
+    // Priest  masteries
+    new spell_pri_shield_discipline;
+    new spell_pri_shadow_orb_power;
+    new spell_pri_echo_of_light;
 }

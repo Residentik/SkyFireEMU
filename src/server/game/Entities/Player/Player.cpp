@@ -7761,6 +7761,9 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
         {
             RemoveAurasByType(SPELL_AURA_MOUNTED);
 
+            if (HasAura(87840))
+                RemoveAurasDueToSpell(87840);
+
             if (IsInDisallowedMountForm())
                 RemoveAurasByType(SPELL_AURA_MOD_SHAPESHIFT);
         }
@@ -15807,6 +15810,15 @@ void Player::RewardQuest(Quest const *quest, uint32 reward, Object* questGiver, 
     //Need added currency fields to quest template.
     //if (quest->GetRewArenaPoints())
     //    ModifyConquestPoints(quest->GetRewArenaPoints());
+
+    // currencies reward
+    for (uint32 i=0; i<QUEST_CURRENCY_COUNT; i++)
+    {
+        uint32 currId = quest->GetRewCurrencyId(i);
+        uint32 currCount = quest->GetRewCurrencyCount(i);
+        if( currId && currCount )
+		    ModifyCurrency(currId, currCount * PLAYER_CURRENCY_PRECISION);
+    }
 
     // Send reward mail
     if (uint32 mail_template_id = quest->GetRewMailTemplateId())
@@ -23936,7 +23948,7 @@ void Player::UpdateUnderwaterState(Map* m, float x, float y, float z)
     }
 
     // Allow travel in dark water on taxi or transport
-    if ((liquid_status.type & MAP_LIQUID_TYPE_DARK_WATER) && !isInFlight() && !GetTransport())
+    if ((liquid_status.type & MAP_LIQUID_TYPE_DARK_WATER) && !isInFlight() && !GetTransport() && !IsInUnderWaterZone())
         _MirrorTimerFlags |= UNDERWARER_INDARKWATER;
     else
         _MirrorTimerFlags &= ~UNDERWARER_INDARKWATER;

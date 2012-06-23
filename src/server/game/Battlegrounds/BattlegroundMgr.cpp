@@ -446,8 +446,8 @@ void BattlegroundMgr::BuildPvpLogDataPacket(WorldPacket* data, Battleground* bg)
                         break;
                    case 726:
                        data->put(extraFields, 2);                                                       // count of next fields
-                       *data << uint32(((BattlegroundTPScore*)itr2->second)->FlagCaptures);             // flag captures
-                       *data << uint32(((BattlegroundTPScore*)itr2->second)->FlagReturns);              // flag returns
+                       *data << uint32(((BattlegroundTPScore*)(itr2->second))->FlagCaptures);             // flag captures
+                       *data << uint32(((BattlegroundTPScore*)(itr2->second))->FlagReturns);              // flag returns
                        break;
                    case 761:
                        data->put(extraFields, 2);                                                       // count of next fields

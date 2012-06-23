@@ -1235,6 +1235,23 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                         else
                             target->AddAura(74396, target);
                     }
+                    {
+                     case 120: // Cone of Cold
+                        // Improved Cone of Cold
+                        if (AuraEffect const* aurEff = caster->GetAuraEffect(SPELL_AURA_DUMMY, SPELLFAMILY_MAGE, 35, 0))
+                        {
+                            uint32 spellId = 0;
+
+                            switch (aurEff->GetId())
+                            {
+                                case 11190: spellId = 83301; break;
+                                case 12489: spellId = 83302; break;
+                            }
+                            if (spellId)
+                                target->CastSpell(target, spellId, true, NULL, GetEffect(0), GetCasterGUID());
+                        }
+                        break;
+                    }
                     default:
                         break;
                 }
@@ -1439,20 +1456,20 @@ void Aura::HandleAuraSpecificMods(AuraApplication const* aurApp, Unit* caster, b
                         if (target->HasAura(70752)) // Item - Mage T10 2P Bonus
                             target->CastSpell(target, 70753, true);
                         break;
+                    case 11426: // Ice Barrier
+                    {
+                        if (!caster)
+                            break;
+                        if (removeMode == AURA_REMOVE_BY_ENEMY_SPELL)
+                            if (caster->HasAura(44745)) // Shattered Barrier, Rank 1
+                                caster->CastSpell(caster, 55080, true, NULL, GetEffect(0), GetCasterGUID());
+                            else if (caster->HasAura(54787)) // Shattered Barrier, Rank 2
+                                caster->CastSpell(caster, 83073, true, NULL, GetEffect(0), GetCasterGUID());
+                        break;
+                    }
                     default:
                         break;
                 }
-                if (!caster)
-                    break;
-                // Ice barrier - dispel/absorb remove
-                if (removeMode == AURA_REMOVE_BY_ENEMY_SPELL && GetSpellInfo()->SpellFamilyFlags[1] & 0x1)
-                {
-                    // Shattered Barrier
-                    if (AuraEffect * dummy = caster->GetDummyAuraEffect(SPELLFAMILY_MAGE, 2945, 0))
-                        if (roll_chance_i(dummy->GetSpellInfo()->ProcChance))
-                            caster->CastSpell(target, 55080, true, NULL, GetEffect(0));
-                }
-                break;
             case SPELLFAMILY_WARRIOR:
                 if (!caster)
                     break;

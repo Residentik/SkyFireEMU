@@ -1099,8 +1099,11 @@ enum SkyFireStrings
     LANG_BG_SA_H_GY_EAST                    = 10073, //The Horde captured the East Graveyard!
 
     // Use for custom patches             11000-11999
-    LANG_AUTO_BROADCAST                 = 11000,
-    LANG_INVALID_REALMID                = 11001,
+    LANG_AUTO_BROADCAST                     = 11000,
+    LANG_INVALID_REALMID                    = 11001,
+    LANG_SYSTEMMESSAGE_MODERATOR            = 11005,
+    LANG_SYSTEMMESSAGE_GAMEMASTER           = 11006,
+    LANG_SYSTEMMESSAGE_ADMINISTRATOR        = 11007,
 
     // NOT RESERVED IDS                   12000-1999999999
     // `db_script_string` table index     2000000000-2000009999 (MIN_DB_SCRIPT_STRING_ID-MAX_DB_SCRIPT_STRING_ID)

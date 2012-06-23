@@ -2980,6 +2980,9 @@ void SpellMgr::LoadSpellCustomAttr()
             case 79640: // Enhanced Intellect
                 spellInfo->DurationEntry = sSpellDurationStore.LookupEntry(367);    // 2 hours instead of 1
                 break;
+            case 23885: // Bloodthirst
+                spellInfo->Effects[0].BasePoints = 500;
+                break;
             case 76547: // Mana Adept
             case 77226: // Deep Healing
             case 76613: // Frostburn
